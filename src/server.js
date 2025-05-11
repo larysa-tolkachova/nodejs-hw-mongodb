@@ -37,7 +37,7 @@ export const setupServer = async () => {
 
       const data = await getContactsById(contactId);
 
-      if (data === null) {
+      if (!data) {
         return res.status(404).json({ message: 'Contact not found' });
       }
 
