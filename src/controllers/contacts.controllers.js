@@ -1,4 +1,10 @@
-import { getContacts, getContactsById, creatContacts, updateContacts, deleteContacts } from '../services/contacts.js';
+import {
+  getContacts,
+  getContactsById,
+  creatContacts,
+  updateContacts,
+  deleteContacts,
+} from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
 //===================
@@ -16,9 +22,10 @@ const getContactsByIdController = async (req, res) => {
   const { contactId } = req.params;
 
   const data = await getContactsById(contactId);
+  console.log(data);
 
   if (!data) {
-    throw createHttpError.NotFound('Contact not found'); //next(createError(404, 'Route not found'));
+    throw createHttpError(404, 'Contact not found');
   }
 
   res.json({
@@ -29,7 +36,7 @@ const getContactsByIdController = async (req, res) => {
 };
 //========================
 
-const creatContactsController = async (req, res) => {
+const createContactsController = async (req, res) => {
   const data = await creatContacts(req.body);
 
   res.status(201).json({
@@ -46,7 +53,7 @@ const updateContactsController = async (req, res) => {
   const data = await updateContacts(contactId, req.body);
 
   if (!data) {
-    throw createHttpError.NotFound('Contact not found');
+    throw createHttpError(404, 'Contact not found');
   }
 
   res.json({
@@ -63,7 +70,7 @@ const deleteContactsController = async (req, res) => {
   const data = await deleteContacts(contactId);
 
   if (!data) {
-    throw createHttpError.NotFound('Contact not found');
+    throw createHttpError(404, 'Contact not found');
   }
   res.status(204).end();
 };
@@ -71,7 +78,7 @@ const deleteContactsController = async (req, res) => {
 export {
   getContactsController,
   getContactsByIdController,
-  creatContactsController,
+  createContactsController,
   updateContactsController,
   deleteContactsController,
 };

@@ -1,11 +1,13 @@
-import { Contact } from '../models/contact.js';
+import { ContactModel } from '../models/contact.js';
 
-export const getContacts = () => Contact.find();
+export const getContacts = () => ContactModel.find();
 
-export const getContactsById = (id) => Contact.findOne({ _id: id });
+export const getContactsById = (contactId) => ContactModel.findById(contactId);
 
-export const creatContacts = (payload) => Contact.create(payload);
+export const creatContacts = (payload) => ContactModel.create(payload);
 
-export const updateContacts = (contactId, payload) => Contact.findOneAndUpdate(contactId, payload, { new: true });
+export const updateContacts = (contactId, payload) =>
+  ContactModel.findByIdAndUpdate(contactId, payload, { new: true });
 
-export const deleteContacts = (id) => Contact.findOneAndDelete({ _id: id });
+export const deleteContacts = (contactId) =>
+  ContactModel.findByIdAndDelete(contactId);
