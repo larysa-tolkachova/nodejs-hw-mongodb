@@ -1,12 +1,28 @@
 import { ContactModel } from '../models/contact.js';
 
-export const getContacts = async ({ page, perPage, sortBy, sortOrder }) => {
-  //пагінація
+export const getContacts = async ({
+  page,
+  perPage,
+  sortBy,
+  sortOrder,
+  filter,
+}) => {
+  //пагінація, сортування, фільтр
   const skip = page > 0 ? (page - 1) * perPage : 0;
 
+  const contactQuery = ContactModel.find();
+
+  if (typeof filter.type !== 'undefined') {
+    contactQuery.where('contactType').equals(filter.type);
+  }
+
+  if (typeof filter.favourite !== 'undefined') {
+    contactQuery.where('isFavourite').equals(filter.favourite);
+  }
+
   const [total, contacts] = await Promise.all([
-    ContactModel.countDocuments(),
-    ContactModel.find()
+    ContactModel.countDocuments(contactQuery),
+    contactQuery
       .sort({ [sortBy]: sortOrder })
       .skip(skip)
       .limit(perPage),
@@ -14,6 +30,7 @@ export const getContacts = async ({ page, perPage, sortBy, sortOrder }) => {
 
   const totalPage = Math.ceil(total / perPage);
   //===========================================
+
   return {
     contacts,
     total,
