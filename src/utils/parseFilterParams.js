@@ -36,6 +36,6 @@ export function parseFilterParams(query) {
 
   return {
     type: parsedType,
-    favourite: parsedIsFavourite,
+    isFavourite: parsedIsFavourite,
   };
 }
