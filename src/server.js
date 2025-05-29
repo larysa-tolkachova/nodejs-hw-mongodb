@@ -3,7 +3,7 @@ import cors from 'cors';
 import pino from 'pino-http';
 
 import { getEnvVar } from '../src/utils/getEnvVar.js';
-import contactRouter from '../src/routers/contacts.routers.js';
+import router from './routers/index.js';
 import { errorHandler } from '../src/middlewares/errorHandler.js';
 import { notFoundHandler } from '../src/middlewares/notFoundHandler.js';
 
@@ -24,7 +24,7 @@ export const setupServer = async () => {
       res.json({ message: 'Server start successfully' });
     });
 
-    app.use(contactRouter);
+    app.use(router);
 
     app.use(notFoundHandler); //Error 404
 
