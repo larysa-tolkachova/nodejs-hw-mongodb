@@ -7,10 +7,10 @@ export function validateBody(schema) {
 
       next();
     } catch (error) {
-      //   const errors = error.detais.map((detail) => detail.message);
-      console.log(error);
+      const errors = error.details.map((detail) => detail.message);
+      console.log(errors);
 
-      return next(createHttpError.BadRequest(error));
+      return next(createHttpError.BadRequest(errors));
     }
   };
 }
