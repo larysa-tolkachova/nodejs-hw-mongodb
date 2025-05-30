@@ -31,21 +31,3 @@ userSchema.methods.toJSON = function () {
 };
 
 export const UserModel = mongoose.model('User', userSchema);
-//===============
-// Створіть модель Session з такими полями:
-
-// const sessionSchema = new mongoose.Schema(
-//   {
-//     userId: {
-//       type: String,
-//       required: true,
-//     },
-//     accessToken: { type: String, required: true },
-//     refreshToken: { type: String, required: true },
-//     accessTokenValidUntil: { Date, required: true },
-//     refreshTokenValidUntil: { Date, required: true },
-//   },
-//   { timestamps: true, versionKey: false },
-// );
-
-// export const SessionModel = mongoose.model('Session', sessionSchema);
