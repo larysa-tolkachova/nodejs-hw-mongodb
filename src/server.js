@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
+import cookieParser from 'cookie-parser';
 
 import { getEnvVar } from '../src/utils/getEnvVar.js';
 import router from './routers/index.js';
@@ -11,6 +12,7 @@ export const setupServer = async () => {
   try {
     const app = express();
 
+    app.use(cookieParser());
     app.use(cors());
     app.use(
       pino({
