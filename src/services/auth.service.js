@@ -1,4 +1,4 @@
-import crypto from 'node:crypto'; //модуль для роботи з криптографією
+// import crypto from 'node:crypto'; //модуль для роботи з криптографією
 
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
@@ -6,7 +6,12 @@ import createHttpError from 'http-errors';
 import { UserModel } from '../models/user.js';
 import { SessionModel } from '../models/sessions.js';
 
-import { FIFTEEN_MINUTES, THIRTY_DAY } from '../constsnts/session.js';
+import {
+  FIFTEEN_MINUTES,
+  THIRTY_DAY,
+  cryptoAccessToken,
+  cryptoRefreshToken,
+} from '../constsnts/session.js';
 
 //registr user
 export const registrUser = async (payload) => {
@@ -37,14 +42,14 @@ export const loginUser = async (email, password) => {
 
   await SessionModel.deleteOne({ userId: user._id });
 
-  const accessToken = crypto.randomBytes(30).toString('base64');
-  const refreshToken = crypto.randomBytes(30).toString('base64');
+  // const accessToken = crypto.randomBytes(30).toString('base64');
+  // const refreshToken = crypto.randomBytes(30).toString('base64');
 
   //створення session
   return SessionModel.create({
     userId: user._id,
-    accessToken,
-    refreshToken,
+    accessToken: cryptoAccessToken,
+    refreshToken: cryptoRefreshToken,
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
     refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAY),
   });
@@ -73,14 +78,14 @@ export const refreshSession = async (sessionId, refreshToken) => {
 
   await SessionModel.deleteOne({ _id: session._id }); //видаляємо поточну сесію
 
-  const newAccessToken = crypto.randomBytes(30).toString('base64');
-  const newRefreshToken = crypto.randomBytes(30).toString('base64');
+  // const newAccessToken = crypto.randomBytes(30).toString('base64');
+  // const newRefreshToken = crypto.randomBytes(30).toString('base64');
 
   //створення new session
   return SessionModel.create({
     userId: session.userId,
-    accessToken: newAccessToken,
-    refreshToken: newRefreshToken,
+    accessToken: cryptoAccessToken,
+    refreshToken: cryptoRefreshToken,
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
     refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAY),
   });

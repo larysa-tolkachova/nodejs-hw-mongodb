@@ -6,11 +6,14 @@ export const getContacts = async ({
   sortBy,
   sortOrder,
   filter,
+  userId,
 }) => {
   //пагінація, сортування, фільтр
   const skip = page > 0 ? (page - 1) * perPage : 0;
 
   const contactQuery = ContactModel.find();
+
+  contactQuery.where('userId').equals(userId); //користувачу тільки його контакти
 
   if (typeof filter.type !== 'undefined') {
     contactQuery.where('contactType').equals(filter.type);
