@@ -4,6 +4,7 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
 import { registrSchema, loginSchema } from '../validation/auth.schema.js';
+
 import {
   registerController,
   loginController,
@@ -11,8 +12,11 @@ import {
   refreshCotroller,
 } from '../controllers/auth.controller.js';
 
+import { authenticate } from '../middlewares/authenticate.js';
+
 const router = express.Router();
 const jsonParser = express.json();
+router.use(authenticate);
 
 router.post(
   '/register',
