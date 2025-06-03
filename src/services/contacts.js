@@ -45,12 +45,15 @@ export const getContacts = async ({
   };
 };
 
-export const getContactsById = (contactId) => ContactModel.findById(contactId); // ContactModel.findOne({_id: contactId})
+export const getContactsById = (contactId, userId) =>
+  ContactModel.findOne({ _id: contactId, userId }); // ContactModel.findOne({_id: contactId})  ContactModel.findById(contactId);
 
 export const creatContacts = (payload) => ContactModel.create(payload);
 
-export const updateContacts = (contactId, payload) =>
-  ContactModel.findByIdAndUpdate(contactId, payload, { new: true });
+export const updateContacts = (contactId, userId, payload) =>
+  ContactModel.findOneAndUpdate({ _id: contactId, userId }, payload, {
+    new: true,
+  });
 
-export const deleteContacts = (contactId) =>
-  ContactModel.findByIdAndDelete(contactId);
+export const deleteContacts = (contactId, userId) =>
+  ContactModel.findOneAndDelete({ _id: contactId, userId });
