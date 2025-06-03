@@ -45,7 +45,7 @@ export const getContacts = async ({
   };
 };
 
-export const getContactsById = (contactId) => ContactModel.findById(contactId);
+export const getContactsById = (contactId) => ContactModel.findById(contactId); // ContactModel.findOne({_id: contactId})
 
 export const creatContacts = (payload) => ContactModel.create(payload);
 
