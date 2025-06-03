@@ -34,16 +34,13 @@ const getContactsController = async (req, res) => {
 //=====================
 const getContactsByIdController = async (req, res) => {
   const { contactId } = req.params;
+  const userId = req.user.id;
 
-  const data = await getContactsById(contactId);
+  const data = await getContactsById(contactId, userId);
 
   if (!data) {
     throw createHttpError(404, 'Contact not found');
   }
-
-  if (data.userId.toString() !== req.user.id.toString()) {
-    throw createHttpError(404, 'Contact not found');
-  } //щоб неможливо було достукатись
 
   res.json({
     status: 200,
@@ -67,8 +64,9 @@ const createContactsController = async (req, res) => {
 
 const updateContactsController = async (req, res) => {
   const { contactId } = req.params;
+  const userId = req.user.id;
 
-  const data = await updateContacts(contactId, req.body);
+  const data = await updateContacts(contactId, userId, req.body);
 
   if (!data) {
     throw createHttpError(404, 'Contact not found');
@@ -84,8 +82,9 @@ const updateContactsController = async (req, res) => {
 
 const deleteContactsController = async (req, res) => {
   const { contactId } = req.params;
+  const userId = req.user.id;
 
-  const data = await deleteContacts(contactId);
+  const data = await deleteContacts(contactId, userId);
 
   if (!data) {
     throw createHttpError(404, 'Contact not found');
