@@ -8,15 +8,12 @@ import { registrSchema, loginSchema } from '../validation/auth.schema.js';
 import {
   registerController,
   loginController,
-  logoutCotroller,
-  refreshCotroller,
+  logoutController,
+  refreshController,
 } from '../controllers/auth.controller.js';
-
-import { authenticate } from '../middlewares/authenticate.js';
 
 const router = express.Router();
 const jsonParser = express.json();
-router.use(authenticate);
 
 router.post(
   '/register',
@@ -32,8 +29,8 @@ router.post(
   ctrlWrapper(loginController),
 );
 
-router.post('/logout', ctrlWrapper(logoutCotroller));
+router.post('/logout', ctrlWrapper(logoutController));
 
-router.post('/refresh', ctrlWrapper(refreshCotroller));
+router.post('/refresh', ctrlWrapper(refreshController));
 
 export default router;

@@ -38,7 +38,7 @@ export const loginController = async (req, res) => {
 };
 
 //logout user
-export const logoutCotroller = async (req, res) => {
+export const logoutController = async (req, res) => {
   const { sessionId } = req.cookies;
 
   if (typeof sessionId === 'string') {
@@ -52,7 +52,7 @@ export const logoutCotroller = async (req, res) => {
 };
 
 //refresh
-export const refreshCotroller = async (req, res) => {
+export const refreshController = async (req, res) => {
   const { sessionId, refreshToken } = req.cookies;
 
   const session = await refreshSession(sessionId, refreshToken);

@@ -22,7 +22,7 @@ const getContactsController = async (req, res) => {
     sortBy,
     sortOrder,
     filter,
-    userId: req.user._id,
+    userId: req.user.id,
   });
 
   res.json({
@@ -36,15 +36,14 @@ const getContactsByIdController = async (req, res) => {
   const { contactId } = req.params;
 
   const data = await getContactsById(contactId);
-  console.log(data);
 
   if (!data) {
     throw createHttpError(404, 'Contact not found');
   }
 
-  if (data.userId.toString() !== req.userId.toString) {
+  if (data.userId.toString() !== req.user.id.toString()) {
     throw createHttpError(404, 'Contact not found');
-  }
+  } //щоб неможливо було достукатись
 
   res.json({
     status: 200,
@@ -55,7 +54,8 @@ const getContactsByIdController = async (req, res) => {
 //========================
 
 const createContactsController = async (req, res) => {
-  const data = await creatContacts({ ...req.body, userId: req.user._id });
+  const data = await creatContacts({ ...req.body, userId: req.user.id });
+  //req.body - отримуємо, userId: req.user.id - самі визначаємо
 
   res.status(201).json({
     status: 201,
