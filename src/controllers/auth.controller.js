@@ -3,6 +3,7 @@ import {
   loginUser,
   logoutUser,
   refreshSession,
+  requestResetPassword,
 } from '../services/auth.service.js';
 
 // creat user
@@ -73,3 +74,15 @@ export const refreshController = async (req, res) => {
     data: { accessToken: session.accessToken },
   });
 };
+
+// скидання паролю
+export const requestResetPasswordController = async (req, res) => {
+  const { email } = req.body;
+
+  await requestResetPassword(email);
+
+  res.end();
+};
+//  status: 200,
+//        message: "Reset password email has been successfully sent.",
+//        data: {}
