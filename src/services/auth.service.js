@@ -13,6 +13,8 @@ import {
   cryptoRefreshToken,
 } from '../constsnts/session.js';
 
+import { sendEmail } from '../utils/sendMail.js';
+
 //registr user
 export const registrUser = async (payload) => {
   const user = await UserModel.findOne({ email: payload.email });
@@ -89,4 +91,21 @@ export const refreshSession = async (sessionId, refreshToken) => {
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
     refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAY),
   });
+};
+
+//скидання паролю
+
+export const requestResetPassword = async (email) => {
+  const user = await UserModel.findOne({ email });
+
+  if (user === null) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  //формуємо повідомлення
+  await sendEmail(
+    user.email,
+    'Reset password',
+    '<p>To reset password follow this <a href=>link</a></p>',
+  );
 };
