@@ -1,5 +1,7 @@
 import express from 'express';
+
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+
 import {
   getContactsController,
   getContactsByIdController,
@@ -8,8 +10,10 @@ import {
   deleteContactsController,
 } from '../controllers/contacts.controllers.js';
 
+import { upload } from '../middlewares/upload.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { validateBody } from '../middlewares/validateBody.js';
+
 import {
   createContactSchema,
   updateContactSchema,
@@ -25,6 +29,7 @@ router.get('/:contactId', isValidId, ctrlWrapper(getContactsByIdController));
 
 router.post(
   '/',
+  upload.single('avatar'),
   jsonParser,
   validateBody(createContactSchema),
   ctrlWrapper(createContactsController),

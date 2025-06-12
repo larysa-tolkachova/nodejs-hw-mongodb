@@ -1,5 +1,11 @@
 // import crypto from 'node:crypto'; //модуль для роботи з криптографією
 
+import * as fs from 'node:fs';
+import path from 'node:path';
+import { getEnvVar } from '../utils/getEnvVar.js';
+
+import jwt from 'jsonwebtoken';
+import Handlebars from 'handlebars';
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 
@@ -93,7 +99,13 @@ export const refreshSession = async (sessionId, refreshToken) => {
   });
 };
 
+//=========================================================================
+
 //скидання паролю
+const RESET_PASSWORD_TEMPLATE = fs.readFileSync(
+  path.resolve('src', 'templates', 'reset-password.hbs'),
+  'UTF-8',
+); // зчитали файл шаблону
 
 export const requestResetPassword = async (email) => {
   const user = await UserModel.findOne({ email });
@@ -102,10 +114,31 @@ export const requestResetPassword = async (email) => {
     throw createHttpError(404, 'User not found');
   }
 
+  const html = Handlebars.compile(RESET_PASSWORD_TEMPLATE); //створення повідомлення за шаблоном
+
+  const token = jwt.sign(
+    { sub: user._id, name: user.name },
+    getEnvVar('JWT_SECRET'),
+    { expiresIn: '5m' },
+  ); //створення внутрішнього token
+
   //формуємо повідомлення
   await sendEmail(
     user.email,
     'Reset password',
-    '<p>To reset password follow this <a href=>link</a></p>',
+    html({ link: `http://localhost:3000/reset-password?token=${token}` }),
+    //'<p>To reset password follow this <a href=>link</a></p>',
   );
+};
+// link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}`;
+
+//заміна паролю
+export const resetPassword = async (password, token) => {
+  try {
+    const decoded = jwt.verify(token, getEnvVar('JWT_SECRET'));
+
+    console.log(decoded);
+  } catch (error) {
+    console.log(error);
+  }
 };

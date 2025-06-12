@@ -1,3 +1,6 @@
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
+
 import {
   getContacts,
   getContactsById,
@@ -10,6 +13,8 @@ import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
 //===================
 const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -51,7 +56,28 @@ const getContactsByIdController = async (req, res) => {
 //========================
 
 const createContactsController = async (req, res) => {
-  const data = await creatContacts({ ...req.body, userId: req.user.id });
+  //перемикач
+  let avatar = null;
+
+  if (getEnvVar('UPLOAD_TO_CLOUDINARY') === 'true') {
+    const result = uploadToCloudinary(req.file.path); //завантаження foto на Cloudinar
+    await fs.unlink(req.file.path); //видаляємо картинку
+
+    avatar = result.secure_url;
+  } else {
+    await fs.rename(
+      req.file.path,
+      path.resolve('src', 'uploads', 'avatars', req.file.filename),
+    ); //перемістили file на постійне збереження
+
+    avatar = `http://localhost:3000/avatars/${req.file.filename}`;
+  } //
+
+  const data = await creatContacts({
+    ...req.body,
+    userId: req.user.id, //user до якого належить конкретний contact
+    avatar,
+  });
   //req.body - отримуємо, userId: req.user.id - самі визначаємо
 
   res.status(201).json({

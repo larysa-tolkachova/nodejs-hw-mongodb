@@ -5,10 +5,10 @@ import { getEnvVar } from '../utils/getEnvVar.js';
 const transporter = nodemailer.createTransport({
   host: getEnvVar('SMTP_HOST'),
   port: getEnvVar('SMTP_PORT'),
-  secure: false, // upgrade later with STARTTLS
+  secure: false, // чи безпечне з'єднання
   auth: {
-    user: getEnvVar('SMTP_USER'), // generated user
-    pass: getEnvVar('SMTP_PASSWORD'), // generated password
+    user: getEnvVar('SMTP_USER'), // згенерований user
+    pass: getEnvVar('SMTP_PASSWORD'), // згенерований password
   },
 });
 
@@ -20,7 +20,7 @@ export const sendEmail = async (to, subject, html) => {
     html,
   });
 };
-
+//const sendEmail: (to: any, subject: any, html: any) => Promise<SMTPTransport.SentMessageInfo>
 // 2️⃣  Send a message
 //   transporter
 //     .sendMail({
