@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
 import cookieParser from 'cookie-parser';
+import path from 'node:path';
 
 import { getEnvVar } from '../src/utils/getEnvVar.js';
 import router from './routers/index.js';
@@ -11,6 +12,11 @@ import { notFoundHandler } from '../src/middlewares/notFoundHandler.js';
 export const setupServer = async () => {
   try {
     const app = express();
+
+    app.use(
+      '/avatars',
+      express.static(path.resolve('src', 'uploads', 'avatars')),
+    );
 
     app.use(cookieParser());
     app.use(cors());
