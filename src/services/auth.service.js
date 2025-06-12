@@ -2,7 +2,9 @@
 
 import * as fs from 'node:fs';
 import path from 'node:path';
+
 import { getEnvVar } from '../utils/getEnvVar.js';
+import { sendEmail } from '../utils/sendMail.js';
 
 import jwt from 'jsonwebtoken';
 import Handlebars from 'handlebars';
@@ -18,8 +20,6 @@ import {
   cryptoAccessToken,
   cryptoRefreshToken,
 } from '../constsnts/session.js';
-
-import { sendEmail } from '../utils/sendMail.js';
 
 //registr user
 export const registrUser = async (payload) => {
@@ -101,7 +101,7 @@ export const refreshSession = async (sessionId, refreshToken) => {
 
 //=========================================================================
 
-//скидання паролю
+//запит скидання паролю
 const RESET_PASSWORD_TEMPLATE = fs.readFileSync(
   path.resolve('src', 'templates', 'reset-password.hbs'),
   'UTF-8',
@@ -120,25 +120,41 @@ export const requestResetPassword = async (email) => {
     { sub: user._id, name: user.name },
     getEnvVar('JWT_SECRET'),
     { expiresIn: '5m' },
-  ); //створення внутрішнього token
+  ); //створення внутрішнього token - підписує дані які йому передають
 
   //формуємо повідомлення
   await sendEmail(
     user.email,
     'Reset password',
-    html({ link: `http://localhost:3000/reset-password?token=${token}` }),
+    html({ link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}` }),
     //'<p>To reset password follow this <a href=>link</a></p>',
   );
 };
-// link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}`;
+// link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}`;   // `http://localhost:3000/reset-password?token=${token}`
 
 //заміна паролю
 export const resetPassword = async (password, token) => {
   try {
     const decoded = jwt.verify(token, getEnvVar('JWT_SECRET'));
 
-    console.log(decoded);
+    const user = await UserModel.findById(decoded.sub);
+
+    if (user === null) {
+      throw createHttpError(404, 'User not found');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10); //hash-password new
+
+    await UserModel.findByIdAndUpdate(user._id, { password: hashedPassword }); //змінюємо пароль в DB
   } catch (error) {
-    console.log(error);
+    if (error.name === 'JsonWebTokenError') {
+      throw createHttpError(401, 'Token is unauthorized');
+    }
+
+    if (error.name === 'TokenExpiredError') {
+      throw createHttpError(401, 'Token is expired');
+    }
+
+    throw error;
   }
 };
