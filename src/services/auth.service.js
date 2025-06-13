@@ -127,10 +127,9 @@ export const requestResetPassword = async (email) => {
     user.email,
     'Reset password',
     html({ link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}` }),
-    //'<p>To reset password follow this <a href=>link</a></p>',
   );
 };
-// link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}`;   // `http://localhost:3000/reset-password?token=${token}`
+// link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}`;   // `http://localhost:3000/auth/reset-password?token=${token}`
 
 //заміна паролю
 export const resetPassword = async (password, token) => {

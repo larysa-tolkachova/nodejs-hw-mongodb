@@ -15,6 +15,7 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
+
 //===================
 const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -56,11 +57,13 @@ const getContactsByIdController = async (req, res) => {
 //========================
 
 const createContactsController = async (req, res) => {
+  console.log("'req.file'", req.file);
+
   //перемикач
   let avatar = null;
 
   if (getEnvVar('UPLOAD_TO_CLOUDINARY') === 'true') {
-    const result = uploadToCloudinary(req.file.path); //завантаження foto на Cloudinar
+    const result = await uploadToCloudinary(req.file.path); //завантаження foto на Cloudinar
     await fs.unlink(req.file.path); //видаляємо картинку
 
     avatar = result.secure_url;
