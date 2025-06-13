@@ -17,7 +17,7 @@ import { validateBody } from '../middlewares/validateBody.js';
 import {
   createContactSchema,
   updateContactSchema,
-} from '../validation/students.schema.js';
+} from '../validation/contacts.schema.js';
 
 const router = express.Router();
 

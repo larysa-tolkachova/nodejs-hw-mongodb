@@ -6,6 +6,7 @@ import { SessionModel } from '../models/sessions.js';
 export const authenticate = async (req, res, next) => {
   //зчитуємо token з authorization - Перевірка заголовка авторизації
   const { authorization } = req.headers;
+  console.log(typeof authorization);
 
   if (typeof authorization !== 'string') {
     next(createHttpError(401, 'Please provide access token'));
