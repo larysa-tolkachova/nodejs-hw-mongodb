@@ -48,7 +48,7 @@ router.post(
 ); //робимо запит на скидання паролю
 
 router.post(
-  '/reset-password',
+  '/reset-pwd',
   jsonParser,
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),

@@ -24,12 +24,12 @@ export const loginController = async (req, res) => {
 
   res.cookie('sessionId', session._id, {
     httpOnly: true,
-    expire: session.refreshTokenValidUntil,
+    expires: session.refreshTokenValidUntil,
   });
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
-    expire: session.refreshTokenValidUntil,
+    expires: session.refreshTokenValidUntil,
   });
 
   res.status(200).json({
@@ -61,12 +61,12 @@ export const refreshController = async (req, res) => {
 
   res.cookie('sessionId', session._id, {
     httpOnly: true,
-    expire: session.refreshTokenValidUntil,
+    expires: session.refreshTokenValidUntil,
   });
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
-    expire: session.refreshTokenValidUntil,
+    expires: session.refreshTokenValidUntil,
   });
 
   res.status(200).json({
@@ -85,6 +85,7 @@ export const requestResetPasswordController = async (req, res) => {
   res.json({
     status: 200,
     message: 'Reset password email has been successfully sent.',
+    data: {},
   });
 };
 
@@ -94,5 +95,9 @@ export const resetPasswordController = async (req, res) => {
 
   await resetPassword(password, token);
 
-  res.send({ status: 200, message: 'Reset password successfully' });
+  res.send({
+    status: 200,
+    message: 'Password has been successfully reset.',
+    data: {},
+  });
 };

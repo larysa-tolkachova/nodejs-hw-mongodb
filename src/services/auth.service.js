@@ -1,4 +1,4 @@
-// import crypto from 'node:crypto'; //модуль для роботи з криптографією
+import crypto from 'node:crypto'; //модуль для роботи з криптографією
 
 import * as fs from 'node:fs';
 import path from 'node:path';
@@ -14,12 +14,7 @@ import createHttpError from 'http-errors';
 import { UserModel } from '../models/user.js';
 import { SessionModel } from '../models/sessions.js';
 
-import {
-  FIFTEEN_MINUTES,
-  THIRTY_DAY,
-  cryptoAccessToken,
-  cryptoRefreshToken,
-} from '../constsnts/session.js';
+import { FIFTEEN_MINUTES, THIRTY_DAY } from '../constsnts/session.js'; //cryptoAccessToken,cryptoRefreshToken,
 
 //registr user
 export const registrUser = async (payload) => {
@@ -50,14 +45,14 @@ export const loginUser = async (email, password) => {
 
   await SessionModel.deleteOne({ userId: user._id });
 
-  // const accessToken = crypto.randomBytes(30).toString('base64');
-  // const refreshToken = crypto.randomBytes(30).toString('base64');
+  const newAccessToken = crypto.randomBytes(30).toString('base64');
+  const newRefreshToken = crypto.randomBytes(30).toString('base64');
 
   //створення session
   return SessionModel.create({
     userId: user._id,
-    accessToken: cryptoAccessToken,
-    refreshToken: cryptoRefreshToken,
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
     refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAY),
   });
@@ -86,14 +81,14 @@ export const refreshSession = async (sessionId, refreshToken) => {
 
   await SessionModel.deleteOne({ _id: session._id }); //видаляємо поточну сесію
 
-  // const newAccessToken = crypto.randomBytes(30).toString('base64');
-  // const newRefreshToken = crypto.randomBytes(30).toString('base64');
+  const newAccessToken = crypto.randomBytes(30).toString('base64');
+  const newRefreshToken = crypto.randomBytes(30).toString('base64');
 
   //створення new session
   return SessionModel.create({
     userId: session.userId,
-    accessToken: cryptoAccessToken,
-    refreshToken: cryptoRefreshToken,
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
     refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAY),
   });
@@ -123,13 +118,25 @@ export const requestResetPassword = async (email) => {
   ); //створення внутрішнього token - підписує дані які йому передають
 
   //формуємо повідомлення
-  await sendEmail(
-    user.email,
-    'Reset password',
-    html({ link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}` }),
-  );
+  try {
+    await sendEmail(
+      user.email,
+      'Reset password',
+      html({
+        link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}`,
+      }),
+    );
+  } catch (error) {
+    console.log(error);
+
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.',
+    );
+  }
 };
-// link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}`;   // `http://localhost:3000/auth/reset-password?token=${token}`
+// link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${token}`;
+// // `http://localhost:3000/auth/reset-password?token=${token}`
 
 //заміна паролю
 export const resetPassword = async (password, token) => {
@@ -151,7 +158,7 @@ export const resetPassword = async (password, token) => {
     }
 
     if (error.name === 'TokenExpiredError') {
-      throw createHttpError(401, 'Token is expired');
+      throw createHttpError(401, 'Token is expired or invalid.');
     }
 
     throw error;
