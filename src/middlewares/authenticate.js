@@ -22,6 +22,8 @@ export const authenticate = async (req, res, next) => {
 
   //знаходимо session по accessToken - Перевірка наявності сесії
   const session = await SessionModel.findOne({ accessToken });
+  console.log('accessToken', accessToken);
+  console.log('session', session);
 
   if (session === null) {
     next(createHttpError(401, 'Session not found'));
@@ -30,7 +32,7 @@ export const authenticate = async (req, res, next) => {
 
   //  якщо session є - Перевірка терміну дії токена
   const expiredAccessToken =
-    new Date() > new Date(session.refreshTokenValidUntil);
+    new Date() > new Date(session.accessTokenValidUntil); //session.refreshTokenValidUntil
 
   if (expiredAccessToken) {
     next(createHttpError(401, 'Access token expired'));
