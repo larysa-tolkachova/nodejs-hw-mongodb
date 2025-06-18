@@ -7,7 +7,7 @@ import { authenticate } from '../middlewares/authenticate.js';
 
 const router = express.Router();
 
-router.use('/contacts', authenticate, contactsRoutes);
+router.use('/contacts', authenticate, contactsRoutes); //
 router.use('/auth', authRoutes);
 
 export default router;
