@@ -89,7 +89,7 @@ const updateContactsController = async (req, res) => {
 
   if (req.file) {
     const result = await uploadToCloudinary(req.file.path);
-    await fs.unlink(req.file.path); //видаляємо картинку
+    await fs.unlink(req.file.path); //видаляємо картинку .
     photo = result.secure_url; // шлях до картинки на Cloudinar
   }
 
