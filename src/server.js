@@ -3,11 +3,13 @@ import cors from 'cors';
 import pino from 'pino-http';
 import cookieParser from 'cookie-parser';
 import path from 'node:path';
+import router from './routers/index.js';
 
 import { getEnvVar } from '../src/utils/getEnvVar.js';
-import router from './routers/index.js';
+
 import { errorHandler } from '../src/middlewares/errorHandler.js';
 import { notFoundHandler } from '../src/middlewares/notFoundHandler.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 export const setupServer = async () => {
   try {
@@ -18,6 +20,7 @@ export const setupServer = async () => {
       express.static(path.resolve('src', 'uploads', 'avatars')),
     );
 
+    app.use('/api-docs', swaggerDocs());
     app.use(cookieParser());
     app.use(cors());
     app.use(
