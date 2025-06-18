@@ -14,7 +14,7 @@ import createHttpError from 'http-errors';
 import { UserModel } from '../models/user.js';
 import { SessionModel } from '../models/sessions.js';
 
-import { FIFTEEN_MINUTES, THIRTY_DAY } from '../constsnts/session.js'; //cryptoAccessToken,cryptoRefreshToken,
+import { FIFTEEN_MINUTES, THIRTY_DAY } from '../constants/session.js';
 
 //registr user
 export const registrUser = async (payload) => {

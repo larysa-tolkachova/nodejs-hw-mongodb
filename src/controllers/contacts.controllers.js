@@ -1,4 +1,4 @@
-// import fs from 'node:fs';
+import fs from 'node:fs';
 
 import {
   getContacts,
@@ -13,7 +13,6 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
-// import { getEnvVar } from '../utils/getEnvVar.js';
 
 //===================
 const getContactsController = async (req, res) => {
@@ -56,13 +55,17 @@ const getContactsByIdController = async (req, res) => {
 //========================
 
 const createContactsController = async (req, res) => {
-  const result = await uploadToCloudinary(req.file.path);
+  let photo = null;
+
+  if (req.file) {
+    const result = await uploadToCloudinary(req.file.path);
+    await fs.unlink(req.file.path); //видаляємо картинку
+    photo = result.secure_url; // шлях до картинки на Cloudinar
+  }
 
   //req.file.path - передаємо повний шлях до фото. завантаження foto на Cloudinar
 
-  // await fs.unlink(req.file.path); //видаляємо картинку
-
-  const photo = result.secure_url; // шлях до картинки на Cloudinar
+  //
 
   const data = await creatContacts({
     ...req.body,
@@ -82,17 +85,13 @@ const createContactsController = async (req, res) => {
 const updateContactsController = async (req, res) => {
   const { contactId } = req.params;
   const userId = req.user.id;
+  let photo = null;
 
-  const result = await uploadToCloudinary(req.file.path);
-  console.log('req.file', req.file);
-
-  console.log('req.file.path', req.file.path);
-
-  //req.file.path - передаємо повний шлях до фото. завантаження foto на Cloudinar
-
-  // await fs.unlink(req.file.path); //видаляємо картинку
-
-  const photo = result.secure_url; // шлях до картинки на Cloudinar
+  if (req.file) {
+    const result = await uploadToCloudinary(req.file.path);
+    await fs.unlink(req.file.path); //видаляємо картинку
+    photo = result.secure_url; // шлях до картинки на Cloudinar
+  }
 
   const updateData = { ...req.body };
   if (photo) updateData.photo = photo;
