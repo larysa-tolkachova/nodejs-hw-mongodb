@@ -1,6 +1,6 @@
 # nodejs-hw-mongodb
 
-.messages({ 'string.email': '"Email" must be a valid email address' })
+<!-- .messages({ 'string.email': '"Email" must be a valid email address' })
 
 const createContactsController = async (req, res) => {
 //перемикач
@@ -34,4 +34,4 @@ status: 201,
 message: 'Successfully created a contact!',
 data,
 });
-};
+}; -->
