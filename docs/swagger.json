@@ -12,6 +12,9 @@
   "servers": [
     {
       "url": "http://localhost:3000"
+    },
+    {
+      "url": "https://nodejs-hw-mongodb-10-nutm.onrender.com"
     }
   ],
   "tags": [
@@ -149,7 +152,7 @@
                         },
                         "totalPages": {
                           "type": "number",
-                          "example": 5
+                          "example": 10
                         },
                         "hasNextPage": {
                           "type": "boolean",
@@ -188,6 +191,11 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "name",
+                  "phoneNumber",
+                  "contactType"
+                ],
                 "properties": {
                   "name": {
                     "description": "Contact's name",
@@ -243,7 +251,7 @@
                   "properties": {
                     "status": {
                       "type": "integer",
-                      "example": 200
+                      "example": 201
                     },
                     "message": {
                       "type": "string",
