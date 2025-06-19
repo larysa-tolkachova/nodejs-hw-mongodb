@@ -10,8 +10,9 @@ tags:
   - name: Contacts
     description: Operation with Contacts book
 servers:
-  - url: http://localhost:3000
   - url: https://nodejs-hw-mongodb-10-nutm.onrender.com
+  - url: http://localhost:3000
+
 paths:
   /contacts:
     get:
