@@ -14,8 +14,8 @@ export const setupServer = async () => {
     const app = express();
 
     app.use(
-      '/avatars',
-      express.static(path.resolve('src', 'uploads', 'avatars')),
+      '/photos',
+      express.static(path.resolve('src', 'uploads', 'photos')),
     );
 
     app.use(cookieParser());

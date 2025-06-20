@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+// import fs from 'node:fs';
 
 import {
   getContacts,
@@ -55,17 +55,15 @@ const getContactsByIdController = async (req, res) => {
 //========================
 
 const createContactsController = async (req, res) => {
+  console.log(req.file);
   let photo = null;
 
   if (req.file) {
     const result = await uploadToCloudinary(req.file.path);
-    await fs.unlink(req.file.path); //видаляємо картинку
+
     photo = result.secure_url; // шлях до картинки на Cloudinar
   }
-
   //req.file.path - передаємо повний шлях до фото. завантаження foto на Cloudinar
-
-  //
 
   const data = await creatContacts({
     ...req.body,
@@ -89,7 +87,6 @@ const updateContactsController = async (req, res) => {
 
   if (req.file) {
     const result = await uploadToCloudinary(req.file.path);
-    await fs.unlink(req.file.path); //видаляємо картинку .
     photo = result.secure_url; // шлях до картинки на Cloudinar
   }
 
